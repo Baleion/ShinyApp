@@ -28,7 +28,7 @@ transformation <-function(x, ts){
   return(data)
   }
 
-# Define UI for application that draws a histogram
+# Define UI for application that draws a time series plot and implements basic transformations
 ui <- fluidPage(
    
    # Application title
@@ -43,21 +43,23 @@ ui <- fluidPage(
       )),
         
       
-      # Show a plot of the generated distribution
+      # Show a plot of the time series
       mainPanel(
          dygraphOutput("timePlot")
       )
    ))
 
 
-# Define server logic required to draw a histogram
+# Define server logic required to draw a dygraph plot
 server <- function(input, output) {
+  
+   #Build a reactive function calling our transformation utility so we can easily switch datasets and transformations
    data <- reactive({transformation(input$transform, input$ts)})
      
    output$timePlot <- renderDygraph({
-      # generate bins based on input$bins from ui.R
       
-      # draw the histogram with the specified number of bins
+      #Build a dygraph plot with a range selector so that the time series can be adjusted
+      #Note calling data as a function data()
       dygraph(data()) %>% dyRangeSelector()
    })
 }
